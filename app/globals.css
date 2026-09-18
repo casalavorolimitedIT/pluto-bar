@@ -1,0 +1,69 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:ital,wght@0,200;0,300;0,400;0,500;1,300&display=swap");
+
+@import "tailwindcss";
+
+:root {
+  --font-display: "Cormorant Garamond", serif;
+  --font-body: "Jost", sans-serif;
+
+  --page: #ffffff;
+  --cover: #d9cbb8;
+  --tan: #c9ac86;
+  --tan-soft: #ddc7a8;
+  --brown: #8a6e4c;
+  --brown-deep: #6b5940;
+  --ink: #2e261b;
+  --ink-mid: #55493a;
+  --ink-soft: #6b5d4a;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  font-weight: 300;
+  background: var(--page);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* dotted price leader */
+.leader {
+  flex: 1 1 auto;
+  min-width: 1.5rem;
+  margin: 0 14px;
+  border-bottom: 1px dotted var(--tan);
+  transform: translateY(-5px);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@keyframes pluto-ring-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pluto-spin {
+  animation: pluto-ring-spin 7s linear infinite;
+}
