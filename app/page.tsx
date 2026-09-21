@@ -252,14 +252,23 @@ function ItemRow({
   categoryName,
   index,
   onSelect,
+  tone = "light",
 }: {
   item: MenuItem;
   categoryName: string;
   index?: number;
   onSelect: (item: MenuItem) => void;
+  tone?: "light" | "dark";
 }) {
   const onRequest = item.price_mode === "tbd";
   const hasReviews = (item.review_count ?? 0) > 0;
+  const isDark = tone === "dark";
+  const textColor = isDark ? "text-[#f8f0df]" : "text-[#5c2c19]";
+  const mutedColor = isDark ? "text-[#f8f0df]/75" : "text-[#5c2c19]/72";
+  const priceColor = isDark ? "text-[#f8f0df]" : "text-[#5c2c19]";
+  const leaderColor = isDark ? "border-[#f8f0df]/50" : "border-[#4c2619]/45";
+  const hoverBg = isDark ? "hover:bg-white/8" : "hover:bg-[#4c2619]/5";
+
   return (
     <li
       role="button"
@@ -269,10 +278,10 @@ function ItemRow({
         if (event.key === "Enter" || event.key === " ") onSelect(item);
       }}
       aria-label={`Open details for ${item.name}`}
-      className="group flex cursor-pointer select-none items-start gap-3 rounded-sm transition-colors hover:bg-[var(--tan-soft)]/10 focus-visible:outline-none focus-visible:bg-[var(--tan-soft)]/15"
+      className={`group flex cursor-pointer select-none items-start gap-3 rounded-sm border-b border-transparent py-3 transition-colors ${hoverBg} focus-visible:outline-none focus-visible:bg-white/10`}
     >
       {typeof index === "number" && (
-        <span className="mt-[1px] shrink-0 text-[12px] tabular-nums text-[var(--tan)] lg:text-[13px]">
+        <span className={`mt-[1px] shrink-0 text-[12px] tabular-nums ${mutedColor} lg:text-[13px]`}>
           .{String(index).padStart(2, "0")}
         </span>
       )}
@@ -288,34 +297,34 @@ function ItemRow({
       )}
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline">
-          <span className="text-[15px] font-light lg:text-[16px]">
+          <span className={`text-[15px] font-light lg:text-[16px] ${textColor}`}>
             {shortItemName(item.name, categoryName)}
           </span>
-          <span className="leader" aria-hidden="true" />
+          <span className={`leader ${leaderColor}`} aria-hidden="true" />
           <span
             className={
               onRequest
-                ? "shrink-0 text-[14px] font-light text-[var(--ink-soft)]"
-                : "shrink-0 text-[15px] tabular-nums lg:text-[16px]"
+                ? `shrink-0 text-[14px] font-light ${mutedColor}`
+                : `shrink-0 text-[15px] tabular-nums ${priceColor} lg:text-[16px]`
             }
           >
             {formatPrice(item)}
           </span>
         </div>
         {item.description && (
-          <p className="mt-1.5 max-w-[480px] text-[13px] font-light leading-[1.6] text-[var(--ink-soft)] lg:text-[13.5px]">
+          <p className={`mt-1.5 max-w-[480px] text-[13px] font-light leading-[1.6] ${mutedColor} lg:text-[13.5px]`}>
             {item.description}
           </p>
         )}
         {hasReviews && (
-          <p className="mt-1.5 text-[12px] text-[var(--brown)]">
+          <p className={`mt-1.5 text-[12px] ${isDark ? "text-[#f8f0df]/85" : "text-[#8a6e4c]"}`}>
             ★ {item.review_avg?.toFixed(1)} ({item.review_count} review
             {item.review_count === 1 ? "" : "s"})
           </p>
         )}
 
         <div className="mt-2 flex items-center justify-end">
-          <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.25em] text-[var(--brown)] sm:hidden">
+          <span className={`inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.25em] ${isDark ? "text-[#f8f0df]/80" : "text-[#8a6e4c]"} sm:hidden`}>
             Tap for details
             <svg
               viewBox="0 0 24 24"
@@ -328,7 +337,7 @@ function ItemRow({
               <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </span>
-          <span className="hidden items-center gap-1 text-[10px] uppercase tracking-[0.25em] text-[var(--brown)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 sm:inline-flex">
+          <span className={`hidden items-center gap-1 text-[10px] uppercase tracking-[0.25em] ${isDark ? "text-[#f8f0df]/80" : "text-[#8a6e4c]"} opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 sm:inline-flex`}>
             View details
             <svg
               viewBox="0 0 24 24"
@@ -350,9 +359,11 @@ function ItemRow({
 function SubCategoryList({
   category,
   onSelect,
+  tone = "light",
 }: {
   category: GroupedCategory;
   onSelect: (item: MenuItem) => void;
+  tone?: "light" | "dark";
 }) {
   return (
     <>
@@ -361,18 +372,21 @@ function SubCategoryList({
           displayCategoryName(sub.categoryName) !==
           displayCategoryName(category.categoryName);
         const hasDescriptions = sub.items.some((item) => item.description);
+        const headingColor = tone === "dark" ? "text-[#f8f0df]" : "text-[#4c2619]";
+        const mutedColor = tone === "dark" ? "text-[#f8f0df]/75" : "text-[#4c2619]/72";
         return (
           <div
             key={`${sub.categorySortOrder}-${sub.categoryName}`}
             className="mb-10 last:mb-0"
           >
             {showHeading && (
-              <h4 className="font-display mb-4 text-[19px] uppercase tracking-[0.2em] text-[var(--ink)]/85">
+              <h4 className={`font-display mb-4 text-[19px] uppercase tracking-[0.2em] ${headingColor}`}>
                 {displayCategoryName(sub.categoryName)}
               </h4>
             )}
             <ul
-              className={`flex flex-col ${hasDescriptions ? "gap-6" : "gap-[15px]"}`}
+              className={`flex flex-col ${hasDescriptions ? "gap-1" : "gap-[6px]"}`}
+              style={{ color: mutedColor }}
             >
               {sub.items.map((item, itemIndex) => (
                 <ItemRow
@@ -381,6 +395,7 @@ function SubCategoryList({
                   categoryName={sub.categoryName}
                   index={itemIndex + 1}
                   onSelect={onSelect}
+                  tone={tone}
                 />
               ))}
             </ul>
@@ -391,19 +406,23 @@ function SubCategoryList({
   );
 }
 
-function DrinkHeading({ category }: { category: GroupedCategory }) {
+function DrinkHeading({ category, tone = "light" }: { category: GroupedCategory; tone?: "light" | "dark" }) {
   const price = sharedPrice(category);
+  const titleColor = tone === "dark" ? "text-[#f8f0df]" : "text-[#4c2619]";
+  const subColor = tone === "dark" ? "text-[#f8f0df]/75" : "text-[#4c2619]/75";
+  const dividerColor = tone === "dark" ? "bg-[#f8f0df]/45" : "bg-[#4c2619]/45";
+
   return (
     <div className="flex flex-col items-center gap-2.5">
-      <h3 className="font-display text-center text-[22px] uppercase tracking-[0.32em] text-[var(--brown)] lg:text-[25px]">
+      <h3 className={`font-display text-center text-[22px] uppercase tracking-[0.32em] ${titleColor} lg:text-[25px]`}>
         {category.categoryName}
       </h3>
       {price ? (
-        <span className="text-[10px] uppercase tracking-[0.26em] text-[var(--ink-soft)] lg:text-[11px]">
+        <span className={`text-[10px] uppercase tracking-[0.26em] ${subColor} lg:text-[11px]`}>
           All {price}
         </span>
       ) : (
-        <span className="block h-px w-8 bg-[var(--tan)]" />
+        <span className={`block h-px w-8 ${dividerColor}`} />
       )}
     </div>
   );
@@ -415,46 +434,39 @@ function Cover() {
   return (
     <section
       id="top"
-      className="relative flex h-[100svh] min-h-[620px] max-h-[1000px] flex-col items-center justify-center overflow-hidden bg-[var(--cover)] px-6 text-center"
+      className="relative flex h-[46vh] min-h-[300px] max-h-[520px] flex-col items-center justify-center overflow-hidden bg-[#4c2619] px-4 text-center lg:h-[68vh] lg:px-6"
     >
-      <Image
-        src="/menu-cover.jpg"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover object-[center_20%]"
-      />
-      <div className="pointer-events-none absolute inset-5 border border-white/55 sm:inset-11" />
+      <div className="pointer-events-none absolute inset-0 bg-black/15" />
+      <div className="pointer-events-none absolute inset-4 border border-[#f8f0df]/45 sm:inset-10" />
 
-      <div className="relative z-10 flex flex-col items-center">
-        <div className="flex items-center gap-[18px]">
-          <span className="block h-px w-8 bg-[var(--ink)]/50 sm:w-[46px]" />
-          <span className="pl-[0.42em] text-[10px] uppercase tracking-[0.42em] text-[#4a3f2e] sm:text-[11px]">
+      <div className="relative z-10 flex w-full max-w-[90vw] flex-col items-center">
+        <div className="mb-3 flex items-center gap-[14px] sm:mb-4 sm:gap-[18px]">
+          <span className="block h-px w-7 bg-[#f5e9d4]/70 sm:w-[46px]" />
+          <span className="pl-[0.32em] text-[8px] uppercase tracking-[0.28em] text-[#f5e9d4]/90 sm:pl-[0.42em] sm:text-[11px] sm:tracking-[0.42em]">
             Est. Casalavoro
           </span>
-          <span className="block h-px w-8 bg-[var(--ink)]/50 sm:w-[46px]" />
+          <span className="block h-px w-7 bg-[#f5e9d4]/70 sm:w-[46px]" />
         </div>
 
-        <h1 className="font-display mt-7 pl-[0.18em] text-[clamp(64px,11vw,146px)] font-light leading-none tracking-[0.18em] text-[var(--ink)]">
+        <h1 className="font-display pl-[0.12em] text-[clamp(52px,18vw,146px)] font-light leading-none tracking-[0.08em] text-[#f7ebd4] sm:tracking-[0.18em]">
           PLUTO
         </h1>
 
-        <div className="mt-5 flex items-center gap-[22px]">
-          <span className="block h-px w-10 bg-[var(--brown-deep)] sm:w-14" />
-          <span className="font-display pl-[0.62em] text-[17px] uppercase tracking-[0.62em] text-[var(--brown-deep)] sm:text-[21px]">
+        <div className="mt-3 flex items-center gap-[18px] sm:mt-5 sm:gap-[22px]">
+          <span className="block h-px w-8 bg-[#f2d7b6]/90 sm:w-14" />
+          <span className="font-display pl-[0.42em] text-[15px] uppercase tracking-[0.38em] text-[#f2d7b6] sm:pl-[0.62em] sm:text-[21px] sm:tracking-[0.62em]">
             Bar
           </span>
-          <span className="block h-px w-10 bg-[var(--brown-deep)] sm:w-14" />
+          <span className="block h-px w-8 bg-[#f2d7b6]/90 sm:w-14" />
         </div>
 
-        <p className="mt-10 pl-[0.3em] text-[11px] uppercase tracking-[0.3em] text-[#4a3f2e] sm:mt-12 sm:text-[13px]">
+        <p className="mt-6 pl-[0.2em] text-[9px] uppercase tracking-[0.22em] text-[#f5e9d4]/90 sm:mt-8 sm:pl-[0.3em] sm:text-[13px] sm:tracking-[0.3em]">
           Food · Cocktails · Shisha
         </p>
 
         <a
           href="#menu"
-          className="mt-12 inline-flex items-center gap-3.5 border border-[var(--ink)]/60 bg-white/15 px-9 py-[17px] text-[12px] uppercase tracking-[0.28em] text-[var(--ink)] transition-colors hover:bg-white/35 sm:mt-14"
+          className="mt-7 inline-flex items-center gap-3 border border-[#f7ebd4]/80 bg-white/10 px-6 py-[12px] text-[9px] uppercase tracking-[0.22em] text-[#f7ebd4] transition-colors hover:bg-white/20 sm:mt-10 sm:gap-3.5 sm:px-9 sm:py-[17px] sm:text-[12px] sm:tracking-[0.28em]"
         >
           View the menu
           <svg
@@ -474,7 +486,7 @@ function Cover() {
         </a>
       </div>
 
-      <p className="absolute inset-x-0 bottom-12 z-10 text-center text-[10px] uppercase tracking-[0.34em] text-[var(--ink)]/75 sm:bottom-[78px] sm:text-[11px]">
+      <p className="absolute inset-x-0 bottom-4 z-10 text-center text-[8px] uppercase tracking-[0.22em] text-[#f7ebd4]/85 sm:bottom-10 sm:text-[11px] sm:tracking-[0.34em]">
         39 Bangui Street, Wuse II, Abuja
       </p>
     </section>
@@ -483,40 +495,23 @@ function Cover() {
 
 function Welcome() {
   return (
-    <section className="relative overflow-hidden bg-white">
-      <Image
-        src="/menu-28-top.png"
-        alt=""
-        width={640}
-        height={566}
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-28 -top-24 w-[340px] opacity-50 lg:-right-[170px] lg:-top-[150px] lg:w-[640px]"
-      />
-      <Image
-        src="/menu-29-bottom.png"
-        alt=""
-        width={430}
-        height={328}
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-16 -left-24 w-[260px] opacity-45 lg:-bottom-[90px] lg:-left-[120px] lg:w-[430px]"
-      />
-
-      <div className="relative mx-auto grid max-w-[1440px] items-center gap-14 px-6 py-24 sm:px-12 lg:min-h-[900px] lg:grid-cols-2 lg:gap-20 lg:px-28 lg:py-0">
+    <section className="relative overflow-hidden bg-[#faf0e3]">
+      <div className="relative mx-auto grid max-w-[1440px] items-center gap-12 px-6 py-16 sm:px-12 lg:min-h-[560px] lg:grid-cols-[1.1fr_0.9fr] lg:gap-20 lg:px-28 lg:py-20">
         <div className="flex flex-col items-start">
           <div className="flex items-center gap-4">
-            <span className="block h-px w-[38px] bg-[var(--tan)]" />
-            <span className="pl-[0.4em] text-[11px] uppercase tracking-[0.4em] text-[var(--brown)]">
+            <span className="block h-px w-[38px] bg-[#4c2619]" />
+            <span className="pl-[0.4em] text-[11px] uppercase tracking-[0.4em] text-[#4c2619]">
               Welcome
             </span>
           </div>
 
-          <h2 className="font-display mt-6 text-[clamp(38px,5vw,54px)] font-light italic leading-[1.15] text-[var(--ink)]">
+          <h2 className="font-display mt-6 text-[clamp(38px,5vw,54px)] font-light italic leading-[1.15] text-[#3a2d22]">
             We&rsquo;re delighted
             <br />
             to have you
           </h2>
 
-          <p className="mt-8 max-w-[470px] text-[15px] leading-[1.85] text-[var(--ink-mid)] lg:text-[16px]">
+          <p className="mt-8 max-w-[500px] text-[15px] leading-[1.85] text-[#5c4336] lg:text-[16px]">
             Pluto Bar offers a refined escape within Casalavoro, where relaxed
             drinks, carefully prepared bites, and an easy atmosphere come
             together. Whether you are unwinding by the pool, enjoying an
@@ -524,15 +519,15 @@ function Welcome() {
             Bar is made for laid-back luxury and effortless comfort.
           </p>
 
-          <div className="mt-9 border-l border-[var(--tan-soft)] pl-5">
-            <p className="max-w-[430px] text-[14px] leading-[1.75] text-[var(--ink-soft)]">
+          <div className="mt-9 border-l border-[#4c2619]/45 pl-5">
+            <p className="max-w-[430px] text-[14px] leading-[1.75] text-[#5c4336]/90">
               If you have any dietary requirements, food allergies or
               intolerance, please inform our associates when placing your
               order.
             </p>
           </div>
 
-          <p className="mt-9 pl-[0.22em] text-[11px] uppercase tracking-[0.22em] text-[var(--brown)]">
+          <p className="mt-9 pl-[0.22em] text-[11px] uppercase tracking-[0.22em] text-[#7c5a46]">
             All prices subject to 7.5% VAT &amp; 5% entertainment tax
           </p>
         </div>
@@ -543,7 +538,7 @@ function Welcome() {
             alt="Illustration of the Pluto Bar counter and terrace seating"
             width={560}
             height={658}
-            className="h-auto w-full max-w-[560px] mix-blend-multiply"
+            className="h-auto w-full max-w-[560px] rounded-[18px] object-cover shadow-[0_18px_50px_rgba(60,34,20,0.12)]"
           />
         </div>
       </div>
@@ -618,6 +613,7 @@ function MenuSection() {
       },
       { rootMargin: "-30% 0px -60% 0px" },
     );
+
     targets.forEach((target) => observer.observe(target));
     return () => observer.disconnect();
   }, [navItems, filtered]);
@@ -635,7 +631,7 @@ function MenuSection() {
         height="15"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="var(--brown)"
+        stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
         aria-hidden="true"
@@ -653,14 +649,14 @@ function MenuSection() {
         value={searchTerm}
         onChange={(event) => setSearchTerm(event.target.value)}
         placeholder="Search the menu"
-        className="w-full min-w-0 bg-transparent text-[14px] font-light text-[var(--ink)] outline-none placeholder:text-[var(--ink-soft)] lg:text-[13px]"
+        className="w-full min-w-0 bg-transparent text-[14px] font-light outline-none placeholder:text-current/75 lg:text-[13px]"
       />
     </div>
   );
 
   return (
-    <div id="menu">
-      <header className="sticky top-0 z-30 border-b border-[var(--tan)]/50 bg-white/95 backdrop-blur-sm">
+    <div id="menu" className="bg-[#faf0e3]">
+      <header className="sticky top-0 z-30 border-b border-[#4c2619]/25 bg-[#f4e9d4]/95 backdrop-blur-sm">
         <div className="mx-auto flex h-[66px] max-w-[1440px] items-center justify-between px-5 lg:h-[78px] lg:px-16">
           <a href="#top" aria-label="Pluto Bar, back to top">
             <Wordmark size="sm" />
@@ -675,10 +671,10 @@ function MenuSection() {
                 key={item.id}
                 href={`#${item.id}`}
                 aria-current={activeId === item.id ? "true" : undefined}
-                className={`border-b py-[15px] text-[11px] uppercase leading-4 tracking-[0.24em] transition-colors hover:text-[var(--brown)] ${
+                className={`border-b py-[15px] text-[11px] uppercase leading-4 tracking-[0.24em] transition-colors hover:text-[#4c2619] ${
                   activeId === item.id
-                    ? "border-[var(--brown)] text-[var(--ink)]"
-                    : "border-transparent text-[var(--ink-soft)]"
+                    ? "border-[#4c2619] text-[#2e261b]"
+                    : "border-transparent text-[#5c4336]/75"
                 }`}
               >
                 {item.label}
@@ -688,7 +684,7 @@ function MenuSection() {
 
           {searchField(
             "menu-search",
-            "hidden w-[200px] items-center gap-2.5 border-b border-[var(--tan-soft)] px-0.5 py-3 lg:flex",
+            "hidden w-[200px] items-center gap-2.5 border-b border-[#4c2619]/35 px-0.5 py-3 text-[#5c4336] lg:flex",
           )}
         </div>
 
@@ -704,8 +700,8 @@ function MenuSection() {
               aria-current={activeId === item.id ? "true" : undefined}
               className={`inline-flex h-11 shrink-0 items-center px-4 text-[11px] uppercase tracking-[0.18em] transition-colors ${
                 activeId === item.id
-                  ? "bg-[var(--ink)] text-white"
-                  : "border border-[var(--tan)]/80 text-[var(--ink-mid)]"
+                  ? "bg-[#4c2619] text-[#f8f0df]"
+                  : "border border-[#4c2619]/60 text-[#5c4336]"
               }`}
             >
               {item.label}
@@ -718,12 +714,12 @@ function MenuSection() {
         <div className="mx-auto max-w-[1440px] px-5 pt-5 lg:hidden">
           {searchField(
             "menu-search-mobile",
-            "flex h-[46px] items-center gap-2.5 border border-[var(--tan)]/70 px-3.5",
+            "flex h-[46px] items-center gap-2.5 border border-[#4c2619]/60 bg-[#f5e9d4] px-3.5 text-[#5c4336]",
           )}
         </div>
 
         {isLoading && (
-          <p className="py-32 text-center text-[12px] uppercase tracking-[0.24em] text-[var(--ink-soft)]">
+          <p className="py-32 text-center text-[12px] uppercase tracking-[0.24em] text-[#5c4336]/80">
             Loading the menu
           </p>
         )}
@@ -742,159 +738,161 @@ function MenuSection() {
 
         {!isLoading && !isError && filtered.length === 0 && (
           <div className="py-28 text-center">
-            <p className="font-display text-[24px] italic text-[var(--ink)]">
+            <p className="font-display text-[24px] italic text-[#3a2d22]">
               Nothing matches &ldquo;{searchTerm.trim()}&rdquo;
             </p>
             <button
               type="button"
               onClick={() => setSearchTerm("")}
-              className="mt-5 h-11 px-4 text-[11px] uppercase tracking-[0.24em] text-[var(--brown)] hover:text-[var(--ink)]"
+              className="mt-5 h-11 px-4 text-[11px] uppercase tracking-[0.24em] text-[#4c2619] hover:text-[#2e261b]"
             >
               Clear search
             </button>
           </div>
         )}
 
-        {!isLoading && !isError && foodCategories.length > 0 && (
-          <section
-            id="food"
-            className="relative scroll-mt-32 lg:scroll-mt-20"
-          >
-            <Image
-              src="/menu-28-top.png"
-              alt=""
-              width={420}
-              height={371}
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-24 -top-10 hidden w-[300px] opacity-45 sm:block lg:-right-[110px] lg:-top-[70px] lg:w-[420px]"
-            />
+        {!isLoading && !isError && (
+          <div className="mx-auto max-w-[1440px] px-4 pt-8 sm:px-8 lg:px-12 xl:px-20">
+            {foodCategories.map((category, categoryIndex) => {
+              const isAlt = categoryIndex % 2 === 1;
+              const sectionBg = isAlt ? "#4c2619" : "#faf0e3";
+              const fg = isAlt ? "#f8f0df" : "#5c2c19";
+              const muted = isAlt ? "rgba(248,240,223,0.8)" : "rgba(92,44,25,0.7)";
+              const divider = isAlt ? "rgba(248,240,223,0.28)" : "rgba(92,44,25,0.12)";
 
-            <div className="relative z-10 mx-auto max-w-[1440px] px-5 pt-14 sm:px-12 lg:px-28 lg:pt-[78px]">
-              <div className="flex flex-col items-center gap-3.5">
-                <span className="font-display pl-[0.62em] text-[13px] uppercase tracking-[0.62em] text-[var(--brown)] lg:text-[14px]">
-                  Food
-                </span>
-                <span className="block h-px w-11 bg-[var(--tan)]" />
-                <p className="font-display mt-1 text-[15px] italic text-[var(--ink-soft)]">
-                  &ldquo;now this sounds like a plan&rdquo;
-                </p>
-              </div>
+              return (
+                <section
+                  key={`${category.categorySortOrder}-${category.categoryName}`}
+                  id={slugify(category.categoryName)}
+                  className="scroll-mt-28 py-8 sm:py-10 lg:py-12"
+                  style={{ backgroundColor: sectionBg, marginInline: "-1rem" }}
+                >
+                  <div className="mx-auto max-w-[1180px] px-4 sm:px-8">
+                    <div className="mb-6 flex items-center gap-4">
+                      <h2
+                        className="font-display text-[20px] uppercase tracking-[0.2em] sm:text-[22px]"
+                        style={{ color: fg }}
+                      >
+                        {displayCategoryName(category.categoryName)}
+                      </h2>
+                      <span className="h-px flex-1" style={{ backgroundColor: divider }} />
+                    </div>
 
-              <div className="mt-12 gap-x-[104px] lg:mt-[62px] lg:columns-2">
-                {foodCategories.map((category) => (
-                  <div
-                    key={`${category.categorySortOrder}-${category.categoryName}`}
-                    className="mb-12 break-inside-avoid lg:mb-14"
-                  >
-                    <h3 className="font-display mb-5 border-b border-[var(--tan)]/50 pb-3 text-[20px] uppercase tracking-[0.2em] text-[var(--ink)] lg:mb-[22px] lg:text-[24px]">
-                      {displayCategoryName(category.categoryName)}
-                    </h3>
-                    <SubCategoryList category={category} onSelect={setActiveItem} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
+                    <div>
+                      {category.subCategories.map((subCategory) => {
+                        const showSubHeading =
+                          category.subCategories.length > 1 ||
+                          subCategory.categoryName !== category.categoryName;
 
-        {!isLoading &&
-          !isError &&
-          foodCategories.length > 0 &&
-          drinkRows.length > 0 && (
-            <div className="mx-auto mt-10 flex max-w-[1440px] items-center gap-[22px] px-5 sm:px-12 lg:mt-[32px] lg:px-28">
-              <span className="h-px flex-1 bg-[var(--tan)]/55" />
-              <span className="font-display pl-[0.6em] text-[13px] uppercase tracking-[0.6em] text-[var(--brown)]">
-                Bar
-              </span>
-              <span className="h-px flex-1 bg-[var(--tan)]/55" />
-            </div>
-          )}
-
-        {!isLoading && !isError && drinkRows.length > 0 && (
-          <div className="relative">
-            <Image
-              src="/menu-31.png"
-              alt=""
-              width={560}
-              height={321}
-              aria-hidden="true"
-              className="pointer-events-none absolute -left-40 top-[42%] hidden w-[560px] opacity-40 lg:block"
-            />
-
-            <div className="relative z-10 mx-auto max-w-[1440px] px-5 pb-24 sm:px-12 lg:px-28 lg:pb-32">
-              {drinkRows.map((row) => {
-                if (row.length === 1 && allItems(row[0]).length >= 8) {
-                  const category = row[0];
-                  const items = allItems(category);
-                  const mid = Math.ceil(items.length / 2);
-                  const columns = [items.slice(0, mid), items.slice(mid)];
-                  return (
-                    <section
-                      key={category.categoryName}
-                      id={slugify(category.categoryName)}
-                      className="scroll-mt-32 pt-16 lg:scroll-mt-20 lg:pt-[72px]"
-                    >
-                      <DrinkHeading category={category} />
-                      <div className="relative mt-10 grid gap-x-[104px] gap-y-10 lg:mt-[46px] lg:grid-cols-2">
-                        <span className="pointer-events-none absolute inset-y-2 left-1/2 hidden w-px bg-[var(--tan)]/45 lg:block" />
-                        {columns.map((column, columnIndex) => (
-                          <ul
-                            key={columnIndex}
-                            className="flex flex-col gap-y-6 lg:gap-y-[26px]"
+                        return (
+                          <div
+                            key={`${subCategory.categorySortOrder}-${subCategory.categoryName}`}
+                            className="mb-10 last:mb-0"
                           >
-                            {column.map((item, itemIndex) => (
-                              <ItemRow
-                                key={item.id}
-                                item={item}
-                                categoryName={category.categoryName}
-                                index={columnIndex * mid + itemIndex + 1}
-                                onSelect={setActiveItem}
-                              />
-                            ))}
-                          </ul>
-                        ))}
-                      </div>
-                    </section>
-                  );
-                }
+                            {showSubHeading && (
+                              <h3
+                                className="mb-4 text-[10px] uppercase tracking-[0.3em]"
+                                style={{ color: muted }}
+                              >
+                                {displayCategoryName(subCategory.categoryName)}
+                              </h3>
+                            )}
+                            <ul className="flex flex-col gap-1">
+                              {subCategory.items.map((item, itemIndex) => (
+                                <ItemRow
+                                  key={item.id}
+                                  item={item}
+                                  categoryName={subCategory.categoryName}
+                                  index={itemIndex + 1}
+                                  onSelect={setActiveItem}
+                                  tone={isAlt ? "dark" : "light"}
+                                />
+                              ))}
+                            </ul>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </section>
+              );
+            })}
 
-                return (
-                  <div
-                    key={row.map((category) => category.categoryName).join("|")}
-                    className={`mt-14 grid gap-x-[104px] gap-y-10 first:mt-0 lg:mt-16 lg:grid-cols-2 lg:first:mt-0 ${
-                      row.length === 1 ? "lg:mx-auto lg:w-[calc(50%-52px)] lg:grid-cols-1" : ""
-                    }`}
-                  >
-                    {row.map((category) => (
+            {drinkRows.length > 0 && (
+              <div className="mt-10 pb-20">
+                {drinkRows.map((row) => {
+                  if (row.length === 1 && allItems(row[0]).length >= 8) {
+                    const category = row[0];
+                    const items = allItems(category);
+                    const mid = Math.ceil(items.length / 2);
+                    const columns = [items.slice(0, mid), items.slice(mid)];
+                    const tone = "dark";
+                    return (
                       <section
                         key={category.categoryName}
                         id={slugify(category.categoryName)}
-                        className="scroll-mt-32 lg:scroll-mt-20"
+                        className="scroll-mt-32 pt-10"
                       >
-                        <DrinkHeading category={category} />
-                        <div className="mt-9 lg:mt-[38px]">
-                          <SubCategoryList category={category} onSelect={setActiveItem} />
+                        <div className="rounded-none bg-[#4c2619] px-4 py-8 sm:px-8">
+                          <DrinkHeading category={category} tone={tone} />
+                          <div className="relative mt-8 grid gap-x-8 gap-y-4 lg:grid-cols-2">
+                            <span className="pointer-events-none absolute inset-y-2 left-1/2 hidden w-px bg-[#f8f0df]/35 lg:block" />
+                            {columns.map((column, columnIndex) => (
+                              <ul key={columnIndex} className="flex flex-col gap-1">
+                                {column.map((item, itemIndex) => (
+                                  <ItemRow
+                                    key={item.id}
+                                    item={item}
+                                    categoryName={category.categoryName}
+                                    index={columnIndex * mid + itemIndex + 1}
+                                    onSelect={setActiveItem}
+                                    tone={tone}
+                                  />
+                                ))}
+                              </ul>
+                            ))}
+                          </div>
                         </div>
                       </section>
-                    ))}
-                  </div>
-                );
-              })}
-            </div>
+                    );
+                  }
+
+                  return (
+                    <div
+                      key={row.map((category) => category.categoryName).join("|")}
+                      className={`mt-10 grid gap-x-8 gap-y-10 ${row.length === 1 ? "lg:grid-cols-1" : "lg:grid-cols-2"}`}
+                    >
+                      {row.map((category) => (
+                        <section
+                          key={category.categoryName}
+                          id={slugify(category.categoryName)}
+                          className="scroll-mt-32 rounded-none bg-[#4c2619] p-4 sm:p-8"
+                        >
+                          <DrinkHeading category={category} tone="dark" />
+                          <div className="mt-6">
+                            <SubCategoryList category={category} onSelect={setActiveItem} tone="dark" />
+                          </div>
+                        </section>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
       </main>
 
-      <footer className="border-t border-[var(--tan)]/50">
-        <div className="mx-auto flex max-w-[1440px] flex-col gap-8 px-5 py-14 sm:px-12 lg:flex-row lg:items-center lg:justify-between lg:px-28 lg:py-0 lg:h-[250px]">
+      <footer className="border-t border-[#4c2619]/25 bg-[#faf0e3]">
+        <div className="mx-auto flex max-w-[1440px] flex-col gap-8 px-5 py-14 sm:px-12 lg:h-[220px] lg:flex-row lg:items-center lg:justify-between lg:px-28 lg:py-0">
           <a href="#top" aria-label="Pluto Bar, back to top">
             <Wordmark size="md" />
           </a>
           <div className="flex flex-col gap-2.5 lg:items-end lg:text-right">
-            <span className="text-[11px] uppercase tracking-[0.22em] text-[var(--ink-mid)] lg:text-[12px]">
+            <span className="text-[11px] uppercase tracking-[0.22em] text-[#5c4336] lg:text-[12px]">
               39 Bangui Street, Wuse II, Abuja
             </span>
-            <span className="text-[11px] font-light text-[var(--ink-soft)]">
+            <span className="text-[11px] font-light text-[#5c4336]/75">
               All prices subject to 7.5% VAT and 5% entertainment tax
             </span>
           </div>
