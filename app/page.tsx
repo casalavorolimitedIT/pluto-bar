@@ -117,7 +117,8 @@ function formatPrice(item: MenuItem): string {
       .map((option) => Number(option.price_amount))
       .filter((price) => Number.isFinite(price) && price > 0);
     if (prices.length > 0) return `From ${formatNaira(Math.min(...prices))}`;
-    if (item.price_amount !== null) return `From ${formatNaira(item.price_amount)}`;
+    if (item.price_amount !== null)
+      return `From ${formatNaira(item.price_amount)}`;
     return "Variable pricing";
   }
 
@@ -154,9 +155,11 @@ function groupItems(items: MenuItem[]): GroupedCategory[] {
 
   for (const item of items) {
     const hasParent = item.parent_category_name !== null;
-    const sectionName = hasParent ? item.parent_category_name! : item.category_name;
+    const sectionName = hasParent
+      ? item.parent_category_name!
+      : item.category_name;
     const sectionSortOrder = hasParent
-      ? item.parent_category_sort_order ?? item.category_sort_order
+      ? (item.parent_category_sort_order ?? item.category_sort_order)
       : item.category_sort_order;
     const sectionKey = `${sectionSortOrder}-${sectionName}`;
 
@@ -281,7 +284,9 @@ function ItemRow({
       className={`group flex cursor-pointer select-none items-start gap-3 rounded-sm border-b border-transparent py-3 transition-colors ${hoverBg} focus-visible:outline-none focus-visible:bg-white/10`}
     >
       {typeof index === "number" && (
-        <span className={`mt-[1px] shrink-0 text-[12px] tabular-nums ${mutedColor} lg:text-[13px]`}>
+        <span
+          className={`mt-[1px] shrink-0 text-[12px] tabular-nums ${mutedColor} lg:text-[13px]`}
+        >
           .{String(index).padStart(2, "0")}
         </span>
       )}
@@ -296,15 +301,17 @@ function ItemRow({
         />
       )}
       <div className="min-w-0 flex-1">
-        <div className="flex items-baseline">
-          <span className={`text-[15px] font-light lg:text-[16px] ${textColor}`}>
+        <div className="flex items-baseline font-[500]">
+          <span
+            className={`text-[15px]  lg:text-[16px] ${textColor}`}
+          >
             {shortItemName(item.name, categoryName)}
           </span>
           <span className={`leader ${leaderColor}`} aria-hidden="true" />
           <span
             className={
               onRequest
-                ? `shrink-0 text-[14px] font-light ${mutedColor}`
+                ? `shrink-0 text-[14px] ${mutedColor}`
                 : `shrink-0 text-[15px] tabular-nums ${priceColor} lg:text-[16px]`
             }
           >
@@ -312,19 +319,25 @@ function ItemRow({
           </span>
         </div>
         {item.description && (
-          <p className={`mt-1.5 max-w-[480px] text-[13px] font-light leading-[1.6] ${mutedColor} lg:text-[13.5px]`}>
+          <p
+            className={`mt-1.5 max-w-[480px] text-[13px] font-light leading-[1.6] ${mutedColor} lg:text-[13.5px]`}
+          >
             {item.description}
           </p>
         )}
         {hasReviews && (
-          <p className={`mt-1.5 text-[12px] ${isDark ? "text-[#f8f0df]/85" : "text-[#8a6e4c]"}`}>
+          <p
+            className={`mt-1.5 text-[12px] ${isDark ? "text-[#f8f0df]/85" : "text-[#8a6e4c]"}`}
+          >
             ★ {item.review_avg?.toFixed(1)} ({item.review_count} review
             {item.review_count === 1 ? "" : "s"})
           </p>
         )}
 
         <div className="mt-2 flex items-center justify-end">
-          <span className={`inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.25em] ${isDark ? "text-[#f8f0df]/80" : "text-[#8a6e4c]"} sm:hidden`}>
+          <span
+            className={`inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.25em] ${isDark ? "text-[#f8f0df]/80" : "text-[#8a6e4c]"} sm:hidden`}
+          >
             Tap for details
             <svg
               viewBox="0 0 24 24"
@@ -334,10 +347,16 @@ function ItemRow({
               className="h-3.5 w-3.5"
               aria-hidden="true"
             >
-              <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M9 6l6 6-6 6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </span>
-          <span className={`hidden items-center gap-1 text-[10px] uppercase tracking-[0.25em] ${isDark ? "text-[#f8f0df]/80" : "text-[#8a6e4c]"} opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 sm:inline-flex`}>
+          <span
+            className={`hidden items-center gap-1 text-[10px] uppercase tracking-[0.25em] ${isDark ? "text-[#f8f0df]/80" : "text-[#8a6e4c]"} opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 sm:inline-flex`}
+          >
             View details
             <svg
               viewBox="0 0 24 24"
@@ -347,7 +366,11 @@ function ItemRow({
               className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
               aria-hidden="true"
             >
-              <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M9 6l6 6-6 6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </span>
         </div>
@@ -372,15 +395,19 @@ function SubCategoryList({
           displayCategoryName(sub.categoryName) !==
           displayCategoryName(category.categoryName);
         const hasDescriptions = sub.items.some((item) => item.description);
-        const headingColor = tone === "dark" ? "text-[#f8f0df]" : "text-[#4c2619]";
-        const mutedColor = tone === "dark" ? "text-[#f8f0df]/75" : "text-[#4c2619]/72";
+        const headingColor =
+          tone === "dark" ? "text-[#f8f0df]" : "text-[#4c2619]";
+        const mutedColor =
+          tone === "dark" ? "text-[#f8f0df]/75" : "text-[#4c2619]/72";
         return (
           <div
             key={`${sub.categorySortOrder}-${sub.categoryName}`}
             className="mb-10 last:mb-0"
           >
             {showHeading && (
-              <h4 className={`font-display mb-4 text-[19px] uppercase tracking-[0.2em] ${headingColor}`}>
+              <h4
+                className={`font-display mb-4 text-[19px] uppercase tracking-[0.2em] ${headingColor}`}
+              >
                 {displayCategoryName(sub.categoryName)}
               </h4>
             )}
@@ -406,7 +433,13 @@ function SubCategoryList({
   );
 }
 
-function DrinkHeading({ category, tone = "light" }: { category: GroupedCategory; tone?: "light" | "dark" }) {
+function DrinkHeading({
+  category,
+  tone = "light",
+}: {
+  category: GroupedCategory;
+  tone?: "light" | "dark";
+}) {
   const price = sharedPrice(category);
   const titleColor = tone === "dark" ? "text-[#f8f0df]" : "text-[#4c2619]";
   const subColor = tone === "dark" ? "text-[#f8f0df]/75" : "text-[#4c2619]/75";
@@ -414,11 +447,15 @@ function DrinkHeading({ category, tone = "light" }: { category: GroupedCategory;
 
   return (
     <div className="flex flex-col items-center gap-2.5">
-      <h3 className={`font-display text-center text-[22px] uppercase tracking-[0.32em] ${titleColor} lg:text-[25px]`}>
+      <h3
+        className={`font-display text-center text-[22px] uppercase tracking-[0.32em] ${titleColor} lg:text-[25px]`}
+      >
         {category.categoryName}
       </h3>
       {price ? (
-        <span className={`text-[10px] uppercase tracking-[0.26em] ${subColor} lg:text-[11px]`}>
+        <span
+          className={`text-[10px] uppercase tracking-[0.26em] ${subColor} lg:text-[11px]`}
+        >
           All {price}
         </span>
       ) : (
@@ -486,7 +523,7 @@ function Cover() {
         </a>
       </div>
 
-      <p className="absolute inset-x-0 bottom-4 z-10 text-center text-[8px] uppercase tracking-[0.22em] text-[#f7ebd4]/85 sm:bottom-10 sm:text-[11px] sm:tracking-[0.34em]">
+      <p className="absolute inset-x-0 bottom-4 z-10 text-center text-[8px] uppercase tracking-[0.22em] text-[#f7ebd4]/85 sm:bottom-10 sm:text-[11px] sm:tracking-[0.34em] pt-1 pb-2">
         39 Bangui Street, Wuse II, Abuja
       </p>
     </section>
@@ -514,16 +551,15 @@ function Welcome() {
           <p className="mt-8 max-w-[500px] text-[15px] leading-[1.85] text-[#5c4336] lg:text-[16px]">
             Pluto Bar offers a refined escape within Casalavoro, where relaxed
             drinks, carefully prepared bites, and an easy atmosphere come
-            together. Whether you are unwinding by the pool, enjoying an
-            evening with friends, or taking a quiet moment for yourself, Pluto
-            Bar is made for laid-back luxury and effortless comfort.
+            together. Whether you are unwinding by the pool, enjoying an evening
+            with friends, or taking a quiet moment for yourself, Pluto Bar is
+            made for laid-back luxury and effortless comfort.
           </p>
 
           <div className="mt-9 border-l border-[#4c2619]/45 pl-5">
             <p className="max-w-[430px] text-[14px] leading-[1.75] text-[#5c4336]/90">
               If you have any dietary requirements, food allergies or
-              intolerance, please inform our associates when placing your
-              order.
+              intolerance, please inform our associates when placing your order.
             </p>
           </div>
 
@@ -757,8 +793,12 @@ function MenuSection() {
               const isAlt = categoryIndex % 2 === 1;
               const sectionBg = isAlt ? "#4c2619" : "#faf0e3";
               const fg = isAlt ? "#f8f0df" : "#5c2c19";
-              const muted = isAlt ? "rgba(248,240,223,0.8)" : "rgba(92,44,25,0.7)";
-              const divider = isAlt ? "rgba(248,240,223,0.28)" : "rgba(92,44,25,0.12)";
+              const muted = isAlt
+                ? "rgba(248,240,223,0.8)"
+                : "rgba(92,44,25,0.7)";
+              const divider = isAlt
+                ? "rgba(248,240,223,0.28)"
+                : "rgba(92,44,25,0.12)";
 
               return (
                 <section
@@ -775,7 +815,10 @@ function MenuSection() {
                       >
                         {displayCategoryName(category.categoryName)}
                       </h2>
-                      <span className="h-px flex-1" style={{ backgroundColor: divider }} />
+                      <span
+                        className="h-px flex-1"
+                        style={{ backgroundColor: divider }}
+                      />
                     </div>
 
                     <div>
@@ -838,7 +881,10 @@ function MenuSection() {
                           <div className="relative mt-8 grid gap-x-8 gap-y-4 lg:grid-cols-2">
                             <span className="pointer-events-none absolute inset-y-2 left-1/2 hidden w-px bg-[#f8f0df]/35 lg:block" />
                             {columns.map((column, columnIndex) => (
-                              <ul key={columnIndex} className="flex flex-col gap-1">
+                              <ul
+                                key={columnIndex}
+                                className="flex flex-col gap-1"
+                              >
                                 {column.map((item, itemIndex) => (
                                   <ItemRow
                                     key={item.id}
@@ -859,7 +905,9 @@ function MenuSection() {
 
                   return (
                     <div
-                      key={row.map((category) => category.categoryName).join("|")}
+                      key={row
+                        .map((category) => category.categoryName)
+                        .join("|")}
                       className={`mt-10 grid gap-x-8 gap-y-10 ${row.length === 1 ? "lg:grid-cols-1" : "lg:grid-cols-2"}`}
                     >
                       {row.map((category) => (
@@ -870,7 +918,11 @@ function MenuSection() {
                         >
                           <DrinkHeading category={category} tone="dark" />
                           <div className="mt-6">
-                            <SubCategoryList category={category} onSelect={setActiveItem} tone="dark" />
+                            <SubCategoryList
+                              category={category}
+                              onSelect={setActiveItem}
+                              tone="dark"
+                            />
                           </div>
                         </section>
                       ))}
