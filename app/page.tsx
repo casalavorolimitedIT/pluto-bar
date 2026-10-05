@@ -524,7 +524,7 @@ function Cover() {
       </div>
 
       <p className="absolute inset-x-0 bottom-4 z-10 text-center text-[8px] uppercase tracking-[0.22em] text-[#f7ebd4]/85 sm:bottom-10 sm:text-[11px] sm:tracking-[0.34em] pt-1 pb-2">
-        39 Bangui Street, Wuse II, Abuja
+        36 Bangui Street, Wuse II, Abuja
       </p>
     </section>
   );
@@ -942,7 +942,7 @@ function MenuSection() {
           </a>
           <div className="flex flex-col gap-2.5 lg:items-end lg:text-right">
             <span className="text-[11px] uppercase tracking-[0.22em] text-[#5c4336] lg:text-[12px]">
-              39 Bangui Street, Wuse II, Abuja
+              36 Bangui Street, Wuse II, Abuja
             </span>
             <span className="text-[11px] font-light text-[#5c4336]/75">
               All prices subject to 7.5% VAT and 5% entertainment tax
