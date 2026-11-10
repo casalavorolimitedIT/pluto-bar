@@ -10,8 +10,10 @@ import { useEffect, useMemo, useState } from "react";
 import MenuError from "./components/menuError";
 import MenuItemModal, { type ModalMenuItem } from "./components/MenuItemModal";
 import RestaurantReviewPrompt from "./components/RestaurantReviewPrompt";
+import ReviewBubble from "./components/ReviewBubble";
 import ScrollTop from "./components/scrollTop";
 import SmartImage from "./components/smart-images";
+import { PLUTO_REVIEW_LINK } from "./lib/review-link";
 
 type Addon = {
   id: string;
@@ -982,6 +984,7 @@ function PlutoPage() {
       <MenuSection />
       <RestaurantReviewPrompt kitchenSlug="pluto-bar" />
       <ScrollTop />
+      <ReviewBubble reviewLink={PLUTO_REVIEW_LINK} businessName="Pluto Bar" />
     </div>
   );
 }

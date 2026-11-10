@@ -19,7 +19,7 @@ const ScrollTop = () => {
       aria-label="Back to top"
       onClick={scrollToTop}
       className={[
-        "fixed bottom-6 right-5 z-40 flex h-12 w-12 items-center justify-center sm:bottom-8 sm:right-6",
+        "fixed bottom-[5.25rem] right-5 z-40 flex h-12 w-12 items-center justify-center sm:bottom-[6.25rem] sm:right-8",
         "rounded-full border border-[var(--brown)]/50 bg-[var(--ink)] backdrop-blur-sm",
         "text-white shadow-[0_10px_28px_-6px_rgba(46,38,27,0.5)]",
         "transition-all duration-500 ease-in-out",
